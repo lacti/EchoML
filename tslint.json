@@ -1,6 +1,9 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rules": {
-    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+    "interface-name": false,
+    "object-literal-sort-keys": false,
+    "max-classes-per-file": false
   }
 }

@@ -8,7 +8,7 @@ RUN npm install -g yarn
 RUN yarn
 ADD . .
 
-RUN yarn run build
+RUN yarn build
 
-EXPOSE 80
-CMD yarn run prod
+EXPOSE 4000
+CMD yarn server

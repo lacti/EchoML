@@ -65,7 +65,6 @@ const styles = theme => ({
 class PermanentDrawer extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    storageAccount: PropTypes.string.isRequired,
     containers: PropTypes.array,
     blobs: PropTypes.object,
   };

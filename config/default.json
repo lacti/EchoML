@@ -1,5 +1,5 @@
 {
-  "cors": false,
+  "cors": true,
   "log": {
     "console": {
       "level": "debug",
@@ -17,10 +17,10 @@
   },
   "HOSTNAME": "0.0.0.0",
   "PORT": 4000,
-  "AUTH_KEY": "MY SECURE KEY",
-  "MONGO_HOST": null,
-  "MONGO_USERNAME": null,
-  "MONGO_PASSWORD": null,
+  "AUTH_KEY": "1234",
+  "MONGO_HOST": "127.0.0.1",
+  "MONGO_USERNAME": "root",
+  "MONGO_PASSWORD": "1234",
   "STORAGE_ACCOUNT": null,
   "STORAGE_ACCESS_KEY": null
 }

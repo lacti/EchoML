@@ -1,17 +1,21 @@
 import * as Koa from "koa";
-import { AzureBlobContainer } from "../lib/AzureBlobContainer";
-import { AzureBlobService } from "../lib/AzureBlobService";
-import { User } from "../lib/User";
+import * as BlobContainer from "../lib/BlobContainer";
+import * as BlobService from "../lib/BlobService";
+import * as User from "../lib/User";
 import { Logger } from "../Logger";
 
 export class ContainersController {
   public static async index(ctx: Koa.Context) {
-    const containers: AzureBlobContainer[] = await ContainersController.getAllContainers(ctx);
+    const containers: BlobContainer.IBlobContainer[] = await ContainersController.getAllContainers(
+      ctx,
+    );
     ctx.response.body = containers;
   }
 
   public static async show(ctx: Koa.Context, name: string) {
-    const containers: AzureBlobContainer[] = await ContainersController.getAllContainers(ctx);
+    const containers: BlobContainer.IBlobContainer[] = await ContainersController.getAllContainers(
+      ctx,
+    );
     const match = containers.find(container => !!container.name.match(new RegExp(name, "i")));
 
     if (match) {
@@ -22,11 +26,13 @@ export class ContainersController {
   }
 
   public static async blobs(ctx: Koa.Context, name: string) {
-    const containers: AzureBlobContainer[] = await ContainersController.getAllContainers(ctx);
+    const containers: BlobContainer.IBlobContainer[] = await ContainersController.getAllContainers(
+      ctx,
+    );
     const match = containers.find(container => !!container.name.match(new RegExp(name, "i")));
 
     if (match) {
-      const blobs = await match.getBlobs();
+      const blobs = await BlobContainer.getBlobs(match);
       ctx.response.body = blobs;
     } else {
       ctx.response.status = 404;
@@ -34,26 +40,27 @@ export class ContainersController {
   }
 
   public static async labels(ctx: Koa.Context, name: string) {
-    const containers: AzureBlobContainer[] = await ContainersController.getAllContainers(ctx);
+    const containers: BlobContainer.IBlobContainer[] = await ContainersController.getAllContainers(
+      ctx,
+    );
     const match = containers.find(container => !!container.name.match(new RegExp(name, "i")));
 
     if (match) {
-      const labels = await match.getLabels();
+      const labels = await BlobContainer.getLabels(match);
       ctx.response.body = labels;
     } else {
       ctx.response.status = 404;
     }
   }
 
-  private static async getAllContainers(ctx: Koa.Context): Promise<AzureBlobContainer[]> {
-    const containers: AzureBlobContainer[] = [];
+  private static async getAllContainers(ctx: Koa.Context): Promise<BlobContainer.IBlobContainer[]> {
+    const containers: BlobContainer.IBlobContainer[] = [];
     try {
-      containers.push(...(await AzureBlobService.getConfigContainers()));
+      containers.push(...(await BlobContainer.getAllContainers()));
       const user = await User.getUser(ctx.state.user.email);
       if (user) {
         for (const account of user.storageAccounts || []) {
-          const service = new AzureBlobService(account.name, account.accessKey);
-          const userContainers = await service.getContainers();
+          const userContainers = await BlobService.getContainers(account.name, account.accessKey);
           containers.push(...userContainers);
         }
       }

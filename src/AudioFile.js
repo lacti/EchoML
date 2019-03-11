@@ -23,7 +23,7 @@ import { LinearProgress } from "material-ui/Progress";
 import Tooltip from "material-ui/Tooltip";
 import Snackbar from "material-ui/Snackbar";
 import Table, { TableBody, TableCell, TableHead, TableRow } from "material-ui/Table";
-import { downloadFile } from "./lib/azure";
+import { downloadFile } from "./lib/objects";
 import { loadLabels, saveLabels } from "./lib/labels";
 
 class AudioFile extends React.Component {

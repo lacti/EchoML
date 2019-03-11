@@ -17,7 +17,6 @@ export class API {
     _.get("/api/containers/:name", ContainersController.show),
     _.get("/api/containers/:name/blobs", ContainersController.blobs),
     _.get("/api/containers/:name/labels", ContainersController.labels),
-    _.get("/api/labels", LabelsController.index),
     _.get("/api/labels/:storage_account/:container_name/:filename(.+)", LabelsController.show),
     _.post("/api/labels", LabelsController.store),
   ];

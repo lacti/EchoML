@@ -1,22 +1,49 @@
-import * as mongoose from "mongoose";
-import { Logger } from "../Logger";
-import { Globals } from "./Globals";
+import * as path from "path";
+import * as objs from "./ObjectStorage";
 
-export class Database {
-  public static getConnection(): mongoose.Connection {
-    const host = Globals.getEnvVar("MONGO_HOST");
-    const user = Globals.getEnvVar("MONGO_USERNAME");
-    const pass = Globals.getEnvVar("MONGO_PASSWORD");
-    if (!Database.connection) {
-      (mongoose as any).Promise = global.Promise;
-      mongoose.connect(host, { useNewUrlParser: true, promiseLibrary: global.Promise, user, pass });
-      Database.connection = mongoose.connection;
-      Database.connection.on("error", err => {
-        Logger.logger.error(err);
-      });
+class DatabaseEntity {
+  constructor(private readonly key: string) {}
+
+  public get = <T>() => {
+    const result = objs.readObject(this.key);
+    if (!result) {
+      return undefined;
     }
-    return Database.connection;
-  }
+    return JSON.parse(result.toString("utf-8")) as T;
+  };
 
-  private static connection: mongoose.Connection | null = null;
+  public set = <T>(value: T) => {
+    if (!value) {
+      objs.deleteObject(this.key);
+    } else {
+      objs.storeObject(this.key, JSON.stringify(value));
+    }
+    return value;
+  };
+
+  public abs = () => objs.absolutePath(this.key);
+
+  public remove = () => {
+    return objs.deleteObject(this.key);
+  };
+
+  public list = () => {
+    return objs.listObject(this.key);
+  };
+
+  public listWithMeta = () => {
+    return objs.listObjectWithMeta(this.key);
+  };
 }
+
+class Database {
+  constructor(private readonly tableName: string) {}
+
+  public obj = (...key: string[]) => {
+    const fullKey = path.join(this.tableName, key.join("/"));
+    return new DatabaseEntity(fullKey);
+  };
+}
+
+export const blobDb = new Database("blobs");
+export const labelDb = new Database("labels");

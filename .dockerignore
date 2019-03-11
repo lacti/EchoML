@@ -1,1 +1,10 @@
 node_modules/
+.git/
+.vscode/
+build/
+docs/
+logs/
+objs/
+data/
+
+*.swp

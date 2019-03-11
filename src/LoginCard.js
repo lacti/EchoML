@@ -4,8 +4,6 @@ import Card, { CardActions, CardContent } from "material-ui/Card";
 import Button from "material-ui/Button";
 import Typography from "material-ui/Typography";
 import TextField from "material-ui/TextField";
-import { login, register } from "./lib/auth";
-import { CircularProgress } from "material-ui/Progress";
 
 class LoginCard extends Component {
   constructor(props) {
@@ -24,15 +22,7 @@ class LoginCard extends Component {
   login = async () => {
     this.setState({ isLoading: true });
     try {
-      const response = await login(this.state.email, this.state.password);
-      if (response.status === 401) {
-        const json = await response.json();
-        this.setState({
-          errorMessage: json.message,
-        });
-      } else {
-        this.props.onLogin(this.state.email, this.state.password);
-      }
+      this.props.onLogin(this.state.email, this.state.password);
     } catch (err) {
       this.setState({
         errorMessage: err.message,
@@ -44,12 +34,12 @@ class LoginCard extends Component {
   register = async () => {
     this.setState({ isLoading: true });
     try {
-      const { email, password, passwordConfirm } = this.state;
+      const { password, passwordConfirm } = this.state;
       if (password !== passwordConfirm) {
         throw new Error("Passwords do not match");
       }
 
-      const message = await register(email, password);
+      const message = "";
       this.setState({
         errorMessage: message,
       });

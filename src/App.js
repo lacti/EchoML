@@ -3,8 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
 import LoginCard from "./LoginCard";
 import Drawer from "./Drawer";
-import { getBlobs, getContainers } from "./lib/azure";
-import { isLoggedIn } from "./lib/auth";
+import { getBlobs, getContainers } from "./lib/objects";
 
 class App extends Component {
   constructor(props) {
@@ -17,7 +16,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    const loginStatus = await isLoggedIn();
+    const loginStatus = true; // await isLoggedIn();
     if (loginStatus) {
       this.onLogin();
     }

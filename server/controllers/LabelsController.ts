@@ -1,28 +1,17 @@
 import * as Koa from "koa";
-import { AzureBlobFile } from "../lib/AzureBlobFile";
-import { ILabel, Label } from "../lib/Label";
+import * as Label from "../lib/Label";
 
 interface IStoreRequest {
   storageAccount: string;
   containerName: string;
   filename: string;
-  labels: ILabel[];
+  labels: Label.ILabel[];
 }
 
 export class LabelsController {
-  public static async index(ctx: Koa.Context) {
-    const labels = await Label.getModel()
-      .find()
-      .exec();
-    ctx.response.body = labels;
-  }
-
   public static async show(ctx: Koa.Context, account: string, container: string, filename: string) {
     try {
-      const docUrl = AzureBlobFile.getDownloadURL(account, container, filename);
-      const labels = await Label.getModel()
-        .find({ docUrl })
-        .exec();
+      const labels = await Label.getLabels(account, container, filename);
       ctx.response.body = labels;
     } catch (err) {
       ctx.throw(err);
@@ -34,7 +23,7 @@ export class LabelsController {
       // White list valid POST params
       const { storageAccount, containerName, filename, labels } = ctx.request.body as IStoreRequest;
       if (storageAccount && containerName && filename && labels) {
-        ctx.body = await Label.deleteLabels(storageAccount, containerName, filename);
+        await Label.deleteLabels(storageAccount, containerName, filename);
         ctx.body = await Label.addLabels(storageAccount, containerName, filename, labels);
       } else {
         throw new Error("Invalid POST request");
